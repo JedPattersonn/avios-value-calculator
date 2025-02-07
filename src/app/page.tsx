@@ -37,6 +37,12 @@ interface SavedFlight {
   dateRange?: DateRange;
 }
 
+const getValueIndicator = (value: number) => {
+  if (value >= 1.5) return { label: "Great value!", color: "text-green-500" };
+  if (value >= 1.0) return { label: "Good value", color: "text-blue-500" };
+  return { label: "Poor value", color: "text-red-500" };
+};
+
 export default function Home() {
   const [points, setPoints] = useState("");
   const [fees, setFees] = useState("");
@@ -175,9 +181,18 @@ export default function Home() {
                   <h3 className="text-sm font-medium text-muted-foreground text-center">
                     Value per Point
                   </h3>
-                  <div className="text-3xl font-bold text-center text-primary h-[40px] flex items-center justify-center">
+                  <div className="text-3xl font-bold text-center text-primary h-[40px] flex flex-col items-center justify-center">
                     {valuePerPoint !== null ? (
-                      `${valuePerPoint.toFixed(2)}p`
+                      <>
+                        <span>{valuePerPoint.toFixed(2)}p</span>
+                        <span
+                          className={`text-sm mt-1 ${
+                            getValueIndicator(valuePerPoint).color
+                          }`}
+                        >
+                          {getValueIndicator(valuePerPoint).label}
+                        </span>
+                      </>
                     ) : (
                       <span className="text-muted-foreground text-lg">
                         Enter values above
@@ -293,8 +308,17 @@ export default function Home() {
                           <div className="text-sm">
                             Ticket value: £{flight.ticketValue}
                           </div>
-                          <div className="mt-2 font-semibold text-primary">
-                            {flight.valuePerPoint.toFixed(2)}p per point
+                          <div className="mt-2 font-semibold text-primary flex items-center gap-2">
+                            <span>
+                              {flight.valuePerPoint.toFixed(2)}p per point
+                            </span>
+                            <span
+                              className={`text-sm ${
+                                getValueIndicator(flight.valuePerPoint).color
+                              }`}
+                            >
+                              ({getValueIndicator(flight.valuePerPoint).label})
+                            </span>
                           </div>
                         </motion.div>
                       ))}
